@@ -2,6 +2,7 @@
 
 #[doc(no_inline)]
 pub use crate::{
+    autofix::{Fixer, Unwrappable, Wrapping},
     declare_lint, rule_tests, util, CstRule, Diagnostic, DiagnosticBuilder, Label, Outcome,
     RuleCtx, RuleResult,
 };

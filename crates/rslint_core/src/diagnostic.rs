@@ -1,6 +1,6 @@
 //! A simple builder for facilitating the creation of diagnostics
 
-use crate::{Diagnostic, RuleResult, SyntaxNode};
+use crate::{Diagnostic, SyntaxNode};
 use codespan_reporting::diagnostic::{Label, Severity};
 use rslint_parser::{SyntaxElement, SyntaxNodeExt, SyntaxToken, TextRange};
 use std::ops::Range;
@@ -95,27 +95,18 @@ impl From<DiagnosticBuilder> for Diagnostic {
     }
 }
 
-impl From<DiagnosticBuilder> for RuleResult {
-    fn from(builder: DiagnosticBuilder) -> RuleResult {
-        RuleResult {
-            diagnostics: vec![builder.into()],
-        }
-    }
-}
-
-impl From<DiagnosticBuilder> for Option<RuleResult> {
-    fn from(builder: DiagnosticBuilder) -> Option<RuleResult> {
-        Some(RuleResult {
-            diagnostics: vec![builder.into()],
-        })
-    }
-}
-
 /// A value which can be used as the range inside of a diagnostic.
 ///
 /// This is essentially a hack to allow us to use SyntaxElement, SyntaxNode, etc directly
 pub trait Span {
     fn as_range(&self) -> Range<usize>;
+
+    fn as_text_range(&self) -> TextRange {
+        TextRange::new(
+            (self.as_range().start as u32).into(),
+            (self.as_range().end as u32).into(),
+        )
+    }
 }
 
 impl<T: Span> Span for &T {
